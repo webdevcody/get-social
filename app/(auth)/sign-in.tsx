@@ -26,7 +26,7 @@ export default function Page() {
         await secureSave("token", data.token);
         setPassword("");
         setEmail("");
-        router.push("/dashboard");
+        router.push("/dashboard/(dashboard)");
       } else {
         alert("something went wrong");
       }

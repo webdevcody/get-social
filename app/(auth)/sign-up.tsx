@@ -34,7 +34,7 @@ export default function Page() {
       if (response.ok) {
         const data = await response.json();
         await secureSave("token", data.token);
-        router.push("/dashboard");
+        router.push("/dashboard/(dashboard)");
         setPassword("");
         setEmail("");
       } else {
