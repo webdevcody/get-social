@@ -1,8 +1,9 @@
 import { AppButton } from "@/components/ui/AppButton";
 import { Text } from "@/components/ui/Form";
+import { secureSave } from "@/utils/storage";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Button, StyleSheet, TextInput, View } from "react-native";
+import { StyleSheet, TextInput, View } from "react-native";
 
 export default function Page() {
   const router = useRouter();
@@ -32,9 +33,10 @@ export default function Page() {
     }).then(async (response) => {
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("token", data.token);
+        await secureSave("token", data.token);
         router.push("/dashboard");
-        console.log(data);
+        setPassword("");
+        setEmail("");
       } else {
         alert("something went wrong");
       }
