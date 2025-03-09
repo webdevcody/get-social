@@ -12,5 +12,5 @@ export async function hashPassword(password: string) {
 }
 
 export async function generateJwt(userId: string) {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET!);
+  return jwt.sign({ userId }, process.env.JWT_SECRET!);
 }

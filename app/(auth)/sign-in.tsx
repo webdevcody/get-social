@@ -1,3 +1,4 @@
+import { signIn } from "@/api/users";
 import { AppButton } from "@/components/ui/AppButton";
 import { Text } from "@/components/ui/Form";
 import { secureSave } from "@/utils/storage";
@@ -15,22 +16,17 @@ export default function Page() {
       alert("Please fill in all fields");
       return;
     }
-    console.log("signing in");
 
-    fetch("/api/sign-in", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    }).then(async (response) => {
-      if (response.ok) {
-        const data = await response.json();
-        await secureSave("token", data.token);
+    signIn(email, password)
+      .then(async ({ token }) => {
+        await secureSave("token", token);
         setPassword("");
         setEmail("");
         router.push("/dashboard/(dashboard)");
-      } else {
-        alert("something went wrong");
-      }
-    });
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
   }
 
   return (

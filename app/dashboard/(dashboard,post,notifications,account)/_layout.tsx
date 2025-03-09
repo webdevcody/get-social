@@ -1,6 +1,10 @@
 import Stack from "@/components/ui/Stack";
+import { useRouter } from "expo-router";
+import { Button } from "react-native";
 
 export default function Layout() {
+  const router = useRouter();
+
   return (
     <Stack>
       <Stack.Screen
@@ -14,7 +18,10 @@ export default function Layout() {
         name="post"
         options={{
           presentation: "modal",
-          headerTitle: "Create Post",
+          headerTitle: "",
+          headerLeft: () => (
+            <Button title="Cancel" onPress={() => router.back()} />
+          ),
         }}
       />
       <Stack.Screen

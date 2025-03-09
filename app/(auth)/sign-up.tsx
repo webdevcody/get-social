@@ -1,3 +1,4 @@
+import { signUp } from "@/api/users";
 import { AppButton } from "@/components/ui/AppButton";
 import { Text } from "@/components/ui/Form";
 import { secureSave } from "@/utils/storage";
@@ -27,20 +28,16 @@ export default function Page() {
       return;
     }
 
-    fetch("/api/sign-up", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    }).then(async (response) => {
-      if (response.ok) {
-        const data = await response.json();
-        await secureSave("token", data.token);
+    signUp(email, password)
+      .then(async ({ token }) => {
+        await secureSave("token", token);
         router.push("/dashboard/(dashboard)");
         setPassword("");
         setEmail("");
-      } else {
-        alert("something went wrong");
-      }
-    });
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
   }
 
   return (
