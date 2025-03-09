@@ -48,7 +48,7 @@ export default function Page() {
   }
 
   return (
-    <Form.List style={styles.container} navigationTitle="Settings">
+    <Form.List navigationTitle="Settings">
       <Form.Section title="Profile">
         <Form.HStack>
           <IconSymbol color={AC.lightText} name="info" size={24} />
@@ -99,9 +99,6 @@ export default function Page() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 120,
-  },
   input: {
     flex: 1,
     borderWidth: 1,
