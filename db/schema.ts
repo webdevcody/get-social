@@ -56,3 +56,5 @@ export const postRelations = relations(posts, ({ one }) => ({
 }));
 
 export type Post = typeof posts.$inferSelect;
+export type Profile = typeof profiles.$inferSelect;
+export type User = typeof users.$inferSelect;

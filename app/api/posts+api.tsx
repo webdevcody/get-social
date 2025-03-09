@@ -1,30 +1,8 @@
 import jwt from "jsonwebtoken";
 import { db } from "@/db";
 import { desc, eq } from "drizzle-orm";
-import { Post, posts, users } from "@/db/schema";
-
-async function getUser(request: Request) {
-  const token = request.headers.get("authorization")?.split(" ")[1];
-
-  if (!token) {
-    return undefined;
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
-      userId: string;
-    };
-
-    const user = await db.query.users.findFirst({
-      where: eq(users.id, decoded.userId),
-    });
-
-    return user;
-  } catch (err) {
-    console.error(err);
-    return undefined;
-  }
-}
+import { Post, posts, User, users } from "@/db/schema";
+import { withAuth } from "@/utils/withAuth";
 
 export type GetPostResponse = (Post & {
   profile: {
@@ -32,13 +10,7 @@ export type GetPostResponse = (Post & {
   };
 })[];
 
-export async function GET(request: Request) {
-  const user = await getUser(request);
-
-  if (!user) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+export const GET = withAuth(async (request: Request, user: User) => {
   const allPosts = await db.query.posts.findMany({
     orderBy: [desc(posts.createdAt)],
     limit: 20,
@@ -52,9 +24,9 @@ export async function GET(request: Request) {
   });
 
   return Response.json(allPosts);
-}
+});
 
-export async function POST(request: Request) {
+export const POST = withAuth(async (request: Request, user: User) => {
   const { text } = await request.json();
 
   if (!text) {
@@ -62,12 +34,6 @@ export async function POST(request: Request) {
       { error: "Your post requires some text" },
       { status: 400 }
     );
-  }
-
-  const user = await getUser(request);
-
-  if (!user) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const [newPost] = await db
@@ -79,4 +45,4 @@ export async function POST(request: Request) {
     .returning();
 
   return Response.json(newPost);
-}
+});
