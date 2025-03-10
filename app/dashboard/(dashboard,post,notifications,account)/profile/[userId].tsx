@@ -1,11 +1,13 @@
 import { getProfile } from "@/api/profiles";
 import { getUserPosts } from "@/api/users";
 import { BodyScrollView } from "@/components/ui/BodyScrollView";
+import Skeleton from "@/components/ui/Skeleton";
 import { Post } from "@/db/schema";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { useGlobalSearchParams } from "expo-router";
+import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 export default function ProfileScreen() {
@@ -13,12 +15,12 @@ export default function ProfileScreen() {
   const glob = useGlobalSearchParams();
   const userId = glob.userId as string;
 
-  const { data: profile } = useQuery({
+  const { data: profile, isLoading: isProfileLoading } = useQuery({
     queryKey: ["profile", userId],
     queryFn: () => getProfile(userId, token),
   });
 
-  const { data: posts } = useQuery({
+  const { data: posts, isLoading: isPostsLoading } = useQuery({
     queryKey: ["posts", userId],
     queryFn: () => getUserPosts(userId, token),
   });
@@ -27,7 +29,11 @@ export default function ProfileScreen() {
     <BodyScrollView>
       <View style={styles.headerContainer}>
         <View style={styles.avatar}></View>
-        <Text style={styles.text}>{profile?.displayName}</Text>
+        {isProfileLoading ? (
+          <Skeleton style={styles.displayNameSkeleton} />
+        ) : (
+          <Text style={styles.text}>{profile?.displayName}</Text>
+        )}
       </View>
 
       <View style={styles.followerContainer}>
@@ -37,9 +43,17 @@ export default function ProfileScreen() {
       </View>
 
       <View style={styles.postsContainer}>
-        {posts?.map((post) => (
-          <PostComponent key={post.id} post={post} />
-        ))}
+        {isPostsLoading ? (
+          <React.Fragment>
+            <Skeleton style={styles.postSkeleton} />
+            <Skeleton style={styles.postSkeleton} />
+            <Skeleton style={styles.postSkeleton} />
+            <Skeleton style={styles.postSkeleton} />
+            <Skeleton style={styles.postSkeleton} />
+          </React.Fragment>
+        ) : (
+          posts?.map((post) => <PostComponent key={post.id} post={post} />)
+        )}
       </View>
     </BodyScrollView>
   );
@@ -65,6 +79,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 18,
     marginBottom: 24,
+  },
+  postSkeleton: {
+    width: "100%",
+    height: 100,
+    borderRadius: 8,
+  },
+  displayNameSkeleton: {
+    width: 220,
+    height: 35,
+    borderRadius: 8,
   },
   followerText: {
     color: "white",
