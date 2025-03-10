@@ -35,8 +35,8 @@ export default function Layout() {
           href: "/dashboard/account",
         }}
         name="(account)"
-        title="Account"
-        systemImage="person.fill"
+        title="Settings"
+        systemImage="gearshape.fill"
       />
     </Tabs>
   );

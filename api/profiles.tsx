@@ -32,3 +32,22 @@ export async function updateProfile(displayName: string, token: string) {
     }
   });
 }
+
+export async function getProfile(
+  userId: string,
+  token: string
+): Promise<Profile> {
+  return fetch(`/api/profiles/${userId}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).then(async (response) => {
+    if (response.ok) {
+      return await response.json();
+    } else {
+      const error = await response.json();
+      throw new Error(error.error);
+    }
+  });
+}

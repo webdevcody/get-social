@@ -1,12 +1,12 @@
 import { getPosts } from "@/api/posts";
 import { BodyScrollView } from "@/components/ui/BodyScrollView";
 import { Text } from "@/components/ui/Form";
-import { Post } from "@/db/schema";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { formatDistanceToNow } from "date-fns";
 import { GetPostResponse } from "@/app/api/posts+api";
+import { useRouter } from "expo-router";
 
 export default function Page() {
   const { token } = useAuth();
@@ -27,12 +27,17 @@ export default function Page() {
 }
 
 function PostComponent({ post }: { post: GetPostResponse[number] }) {
+  const router = useRouter();
   return (
     <View style={styles.postContainer}>
       <View style={styles.postHeader}>
         <View style={styles.avatarPlaceholder} />
         <View>
-          <Text style={styles.displayName}>{post.profile.displayName}</Text>
+          <Pressable
+            onPress={() => router.push(`/dashboard/profile/${post.userId}`)}
+          >
+            <Text style={styles.displayName}>{post.profile.displayName}</Text>
+          </Pressable>
           <Text style={styles.timestamp}>
             {formatDistanceToNow(new Date(post.createdAt), {
               addSuffix: true,

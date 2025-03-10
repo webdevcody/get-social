@@ -10,6 +10,7 @@ export default function Layout() {
       <Stack.Screen
         name="index"
         options={{
+          headerTitle: "Feed",
           headerShown: false,
         }}
       />
@@ -35,8 +36,19 @@ export default function Layout() {
       <Stack.Screen
         name="account"
         options={{
+          presentation: "modal",
+          headerTitle: "Settings",
+          headerLeft: () => (
+            <Button title="Cancel" onPress={() => router.back()} />
+          ),
+        }}
+      />
+
+      <Stack.Screen
+        name="profile/[userId]"
+        options={{
           presentation: "card",
-          headerTitle: "Account",
+          headerTitle: "",
         }}
       />
     </Stack>
